@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #F6F8F8;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid red;
+            
+        }
+
+        img {
+            display: inline-flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid blue;
+            width: 25vw;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            border: 1px solid blue;
+            width: 25vw;
+            padding-left: 20px;
+            padding-right: 30px;
+
+        }
+        .item {
+            flex: 1;
+            align-self: auto;
+            border: 1px solid violet;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img src="img/flower1.png">
+        
+    
+    <div class="main">
+        <h3 class="item">꽃다발</h3>
+        <h3 class="item">연분홍 장미</h3>
+        <a class="item">부드러운 연분홍빛 장미는 ‘행복한 사랑’과 ‘수줍은 고백’, 그리고 ‘감사’의 마음을 품고 있습니다. 따뜻하고 사랑스러운 은은한 핑크빛으로 한없이 다정한 진심을 전달하며, 사랑하는 이와의 순간을 더욱 피어나게 만들 특별한 하루를 선물해 보세요.</a>
+        <select name="size">사이즈를 선택해주세요
+            <option>대</option>
+            <option>중</option>
+            <option>소</option>
+        </select>
+        <hr>
+        <a>금액 </a>
+
+    </div>
+    </div>
+</body>
+</html>
