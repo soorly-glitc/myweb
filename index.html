@@ -1,222 +1,226 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>소중한 사람에게 메시지를 전해보세요</title>
-  <!-- 감성적인 분위기를 위한 구글 폰트 (Pretendard / Noto Serif KR) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
-  
-  <style>
-    /* Reset & Base Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 포트폴리오</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      font-family: 'Pretendard', sans-serif;
-      overflow: hidden;
-      background-color: #0f0f12;
-      color: #ffffff;
-    }
+        /* body에 Flexbox를 사용하여 화면 전체(100vh)에서 가로 및 세로 중앙 배치 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
 
-    /* Ambient Background Effect */
-    .bg-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      overflow: hidden;
-    }
+        /* 컨테이너 */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: auto; /* 화면 높이가 좁아질 때 스크롤 시 여백 유지 */
+        }
 
-    .glow-circle {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.45;
-      animation: pulse 8s infinite alternate ease-in-out;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-    .glow-1 {
-      top: -10%;
-      left: -10%;
-      width: 60vw;
-      height: 60vw;
-      background: radial-gradient(circle, #ff8a00, #e52e71);
-    }
+        header h1 {
+            font-size: 2.2rem;
+            color: #111;
+            margin-bottom: 10px;
+        }
 
-    .glow-2 {
-      bottom: -15%;
-      right: -10%;
-      width: 65vw;
-      height: 65vw;
-      background: radial-gradient(circle, #7928ca, #ff0080);
-      animation-delay: -4s;
-    }
+        header p {
+            color: #666;
+            font-size: 1.05rem;
+        }
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1) translate(0, 0);
-      }
-      100% {
-        transform: scale(1.15) translate(30px, -20px);
-      }
-    }
+        /* 프로젝트 그리드 레이아웃 */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
 
-    /* Intro Main Layout */
-    .intro-container {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(10px);
-    }
+        /* 프로젝트 카드 스타일 */
+        .project-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eaeaea;
+        }
 
-    .content-box {
-      max-width: 640px;
-      width: 100%;
-      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
 
-    /* Message Typography */
-    .sub-title {
-      font-size: 1.1rem;
-      font-weight: 300;
-      letter-spacing: 2px;
-      color: rgba(255, 255, 255, 0.75);
-      margin-bottom: 24px;
-      text-transform: uppercase;
-    }
+        .card-header {
+            padding: 24px 24px 12px 24px;
+        }
 
-    .main-message {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 2.8rem;
-      font-weight: 600;
-      line-height: 1.45;
-      word-break: keep-all;
-      margin-bottom: 48px;
-      background: linear-gradient(135deg, #ffffff 30%, rgba(255, 255, 255, 0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #eef2ff;
+            color: #4f46e5;
+            margin-bottom: 8px;
+        }
 
-    .main-message span {
-      display: block;
-      position: relative;
-    }
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
 
-    /* Action Button */
-    .btn-wrapper {
-      display: inline-block;
-    }
+        .card-body {
+            padding: 0 24px 24px 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .btn-start {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 18px 42px;
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #111;
-      background-color: #ffffff;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+        .card-description {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
 
-    .btn-start:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 15px 35px rgba(255, 255, 255, 0.35);
-      background-color: #ffffff;
-    }
+        /* 기술 스택 태그 */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
 
-    .btn-start:active {
-      transform: translateY(0) scale(0.98);
-    }
+        .tech-tag {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
 
-    .btn-icon {
-      width: 18px;
-      height: 18px;
-      transition: transform 0.3s ease;
-    }
+        /* 카드 하단 버튼 링크 */
+        .card-footer {
+            border-top: 1px solid #f3f4f6;
+            padding-top: 16px;
+        }
 
-    .btn-start:hover .btn-icon {
-      transform: translateX(4px);
-    }
+        .btn-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
 
-    /* Animations */
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .main-message {
-        font-size: 2.1rem;
-        margin-bottom: 36px;
-      }
-      .btn-start {
-        padding: 16px 36px;
-        font-size: 1.05rem;
-      }
-    }
-  </style>
+        .btn-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Background Glow Effect -->
-  <div class="bg-container">
-    <div class="glow-circle glow-1"></div>
-    <div class="glow-circle glow-2"></div>
-  </div>
+    <div class="container">
+        <header>
+            <h1>프로젝트 포트폴리오</h1>
+            <p>HTML과 CSS 레이아웃을 다루며 진행한 주요 프로젝트입니다.</p>
+        </header>
 
-  <!-- Intro Main Content -->
-  <main class="intro-container">
-    <div class="content-box">
-      <p class="sub-title">Heartfelt Message</p>
-      <h1 class="main-message">
-        지금 소중한 사람에게<br>
-        메시지를 전해보세요
-      </h1>
-      <div class="btn-wrapper">
-        <!-- 메인 페이지 이동 연결 (ex: main.html) -->
-        <a href="main.html" class="btn-start">
-          <span>카드 쓰러 가기</span>
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
-      </div>
+        <main class="project-grid">
+            <!-- 프로젝트 1 -->
+            <article class="project-card">
+                <div class="card-header">
+                    <span class="badge">Web Publishing</span>
+                    <h2 class="card-title">커스텀 메시지 카드</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        소중한 사람에게 따뜻한 글과 마음을 전달할 수 있도록 제작한 감성 카드 메시지 웹 페이지입니다.
+                    </p>
+                    <div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                        </div>
+                        <div class="card-footer">
+                            <a href="postcard/intro_msg.html" class="btn-link">자세히 보기 &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 프로젝트 2 -->
+            <article class="project-card">
+                <div class="card-header">
+                    <span class="badge">Web Publishing</span>
+                    <h2 class="card-title">디지털 동화책 (미운 아기 오리)</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        일러스트와 스토리를 결합하여 동화책 페이지를 손쉽게 감상하고 이동할 수 있도록 구현한 리더기 웹 페이지입니다.
+                    </p>
+                    <div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                        </div>
+                        <div class="card-footer">
+                            <a href="children's book/intro_book.html" class="btn-link">자세히 보기 &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 프로젝트 3 -->
+            <article class="project-card">
+                <div class="card-header">
+                    <span class="badge">Web ..</span>
+                    <h2 class="card-title">미정</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        미정
+                    </p>
+                    <div>
+                        <div class="tech-stack">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn-link">자세히 보기 &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </main>
     </div>
-  </main>
 
 </body>
 </html>
