@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 레이아웃 핵심 정리 노트</title>
+    <style>
+        .index {
+            display: flex;
+            flex-direction: column;
+            grid-template-columns: 70vw;
+            
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+        }
+        .index h2 {
+            margin: 50px;
+        }
+        .index ul {
+            list-style-type: none;
+        }
+        .index li {
+            padding: 10px;
+            color: navy;
+        }
+        .index hr {
+            width: 50vw;
+        }
+        .index a {  
+            margin-left: 20px;
+            text-decoration: none;
+            color: black;
+        }
+        .index a:hover {
+            color: olive;
+        }
+        href {
+
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="index">
+        <h2>CSS 레이아웃 핵심 정리 노트</h2>
+        <ul>
+            <hr>
+            <li><a href="study1.html">Display</a></li>
+            <hr>
+            <li><a href="study2.html">Position</a></li>
+            <hr>
+            <li><a href="study3.html">Flexbox</a></li>
+        <hr>
+    </ul>
+    </div>
+    
+</body>
+</html>
+

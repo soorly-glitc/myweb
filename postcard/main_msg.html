@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음 전하기 - 카드 작성 및 미리보기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Sunflower:wght@300;500;700&family=Noto+Serif+KR:wght@300;400;600&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      font-family: 'Pretendard', sans-serif;
+      overflow-x: hidden;
+      background-color: #0f0f12;
+      color: #ffffff;
+    }
+
+    /* Background Effect */
+    .bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .glow-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      animation: pulse 10s infinite alternate ease-in-out;
+    }
+
+    .glow-1 {
+      top: -10%;
+      left: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, #ff8a00, #e52e71);
+    }
+
+    .glow-2 {
+      bottom: -15%;
+      right: -10%;
+      width: 65vw;
+      height: 65vw;
+      background: radial-gradient(circle, #7928ca, #ff0080);
+      animation-delay: -5s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.15) translate(30px, -20px); }
+    }
+
+    /* Main Container */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .card-editor-box {
+      width: 100%;
+      max-width: 640px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 32px 36px 36px 36px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Header Nav */
+    .editor-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 8px 14px;
+      margin-left: -10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0);
+      transition: all 0.3s ease;
+    }
+
+    .btn-back svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-back:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-back:hover svg {
+      transform: translateX(-3px);
+    }
+
+    /* Section Control Elements */
+    .control-group {
+      margin-bottom: 24px;
+    }
+
+    .group-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    /* 1. 이메일 입력 섹션 */
+    .email-field {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: all 0.3s ease;
+    }
+
+    .email-field:focus-within {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .email-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
+
+    .email-input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* 2. 라디오버튼 공통 스타일 */
+    .options-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .custom-radio {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .custom-radio input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-btn-label {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .custom-radio:hover .radio-btn-label {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .custom-radio input[type="radio"]:checked + .radio-btn-label {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 3. 카드 작성 영역 */
+    .card-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .card-canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 120%;
+      height: 120%;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.6;
+      transition: all 0.6s ease;
+      pointer-events: none;
+    }
+
+    .card-recipient,
+    .card-sender {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label {
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .card-name-input {
+        background: transparent;
+        border: none;               /* 하단 점선 및 테두리 제거 */
+        outline: none;
+        color: #ffffff;
+        font-size: 1.05rem;
+        padding: 4px 0;
+        width: 200px;
+        transition: opacity 0.3s ease;
+    }
+
+    .card-name-input:focus {
+        border-bottom: none;        /* 포커스 시에도 테두리 없음 */
+    }
+
+    .card-name-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+    }
+
+    .card-sender {
+      justify-content: flex-end;
+    }
+
+    .card-textarea {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      flex-grow: 1;
+      margin: 8px 0 2px 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #ffffff;
+      word-break: break-word;
+    }
+
+    .card-textarea::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .char-counter-wrapper {
+      position: relative;
+      z-index: 2;
+      text-align: right;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 4px;
+      user-select: none;
+    }
+
+    .char-counter-wrapper .current-count {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 600;
+    }
+
+    /* 폰트 스타일 선언 */
+    .font-gowun-label { font-family: 'Gowun Dodum', sans-serif !important; }
+    .font-sunflower-label { font-family: 'Sunflower', sans-serif !important; font-weight: 500; }
+
+    body:has(#font-gowun:checked) .card-textarea,
+    body:has(#font-gowun:checked) .card-name-input { 
+      font-family: 'Gowun Dodum', sans-serif; 
+    }
+
+    body:has(#font-sunflower:checked) .card-textarea,
+    body:has(#font-sunflower:checked) .card-name-input { 
+      font-family: 'Sunflower', sans-serif; 
+      font-weight: 500; 
+    }
+
+    /* 카드 테마 적용 */
+    body:has(#card-love:checked) .card-canvas-container {
+      background: rgba(35, 20, 28, 0.85);
+      border: 1px solid rgba(255, 150, 170, 0.25);
+    }
+    body:has(#card-love:checked) .card-canvas-container::before {
+      background: radial-gradient(circle, #ff6b8b 0%, #b83280 50%, transparent 100%);
+    }
+
+    body:has(#card-thanks:checked) .card-canvas-container {
+      background: rgba(18, 30, 24, 0.85);
+      border: 1px solid rgba(120, 220, 165, 0.25);
+    }
+    body:has(#card-thanks:checked) .card-canvas-container::before {
+      background: radial-gradient(circle, #48bb78 0%, #1a5336 50%, transparent 100%);
+    }
+
+    body:has(#card-sorry:checked) .card-canvas-container {
+      background: rgba(22, 20, 35, 0.85);
+      border: 1px solid rgba(180, 160, 255, 0.25);
+    }
+    body:has(#card-sorry:checked) .card-canvas-container::before {
+      background: radial-gradient(circle, #8b5cf6 0%, #312e81 50%, transparent 100%);
+    }
+
+    /* 4. 전송 버튼 */
+    .action-row {
+      margin-top: 32px;
+    }
+
+    .btn-send {
+      width: 100%;
+      padding: 18px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #0f0f12;
+      background: #ffffff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.12);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(255, 255, 255, 0.25);
+    }
+
+    /* 5. 이미지 미리보기 모달 (Modal) Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: #18181c;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .modal-subtext {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .preview-image-box {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 24px;
+      background: #000;
+    }
+
+    .preview-image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal {
+      flex: 1;
+      padding: 14px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-modal-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .btn-modal-cancel:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-modal-confirm {
+      background: #ffffff;
+      color: #0f0f12;
+    }
+
+    .btn-modal-confirm:hover {
+      background: #e2e2e2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .card-editor-box { padding: 24px 20px; }
+      .card-canvas-container { height: 290px; padding: 20px; }
+      .card-name-input { width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Background -->
+  <div class="bg-container">
+    <div class="glow-circle glow-1"></div>
+    <div class="glow-circle glow-2"></div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+    <div class="card-editor-box">
+      
+      <header class="editor-header">
+        <a href="intro_msg.html" class="btn-back">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+          처음으로
+        </a>
+      </header>
+
+      <!-- 1. 이메일 입력 -->
+      <div class="control-group">
+        <div class="email-field">
+          <input type="email" id="email-input" class="email-input" placeholder="카드를 수신할 이메일 주소를 입력해 주세요" required>
+        </div>
+      </div>
+
+      <!-- 2. 카드 테마 선택 -->
+      <div class="control-group">
+        <span class="group-label">Card Theme</span>
+        <div class="options-row">
+          <label class="custom-radio">
+            <input type="radio" name="card-theme" id="card-love" value="love" checked>
+            <span class="radio-btn-label">사랑해</span>
+          </label>
+          <label class="custom-radio">
+            <input type="radio" name="card-theme" id="card-thanks" value="thanks">
+            <span class="radio-btn-label">고마워</span>
+          </label>
+          <label class="custom-radio">
+            <input type="radio" name="card-theme" id="card-sorry" value="sorry">
+            <span class="radio-btn-label">미안해</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 3. 폰트 선택 -->
+      <div class="control-group">
+        <span class="group-label">Font Style</span>
+        <div class="options-row">
+          <label class="custom-radio font-gowun-label">
+            <input type="radio" name="font-type" id="font-gowun" value="Gowun Dodum" checked>
+            <span class="radio-btn-label">고운돋움</span>
+          </label>
+          <label class="custom-radio font-sunflower-label">
+            <input type="radio" name="font-type" id="font-sunflower" value="Sunflower">
+            <span class="radio-btn-label">해바라기</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 4. 카드 작성 영역 -->
+      <div class="control-group">
+        <div class="card-canvas-container">
+          <div class="card-recipient">
+            <span class="card-label">To.</span>
+            <input type="text" id="to-input" class="card-name-input" placeholder="받는 사람" maxlength="20">
+          </div>
+
+          <textarea class="card-textarea" id="msg" placeholder="소중한 사람에게 마음을 담은 메시지를 작성해보세요" maxlength="100"></textarea>
+
+          <div class="char-counter-wrapper">
+            <span class="current-count" id="char-count">0</span> / 100자
+          </div>
+
+          <div class="card-sender">
+            <span class="card-label">From.</span>
+            <input type="text" id="from-input" class="card-name-input" placeholder="보내는 사람" maxlength="20">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 미리보기 및 전송 버튼 -->
+      <div class="action-row">
+        <button type="button" id="btn-preview-send" class="btn-send">카드 미리보기 및 전송</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 이미지 미리보기 모달 (Modal) -->
+  <div class="modal-overlay" id="preview-modal">
+    <div class="modal-content">
+      <h3 class="modal-title">전송 카드 미리보기</h3>
+      <p class="modal-subtext">상대방 이메일로 아래 생성된 이미지 카드가 발송됩니다.</p>
+      
+      <div class="preview-image-box">
+        <img id="card-preview-img" src="" alt="카드 이미지 미리보기">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal btn-modal-cancel" id="btn-close-modal">수정하기</button>
+        <button type="button" class="btn-modal btn-modal-confirm" id="btn-final-send">최종 전송하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. 글자 수 실시간 카운터
+    const msgTextarea = document.getElementById('msg');
+    const charCount = document.getElementById('char-count');
+
+    msgTextarea.addEventListener('input', () => {
+      charCount.textContent = msgTextarea.value.length;
+    });
+
+    // 2. 미리보기 생성 (Canvas Drawing)
+    const btnPreviewSend = document.getElementById('btn-preview-send');
+    const previewModal = document.getElementById('preview-modal');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnFinalSend = document.getElementById('btn-final-send');
+    const cardPreviewImg = document.getElementById('card-preview-img');
+
+    btnPreviewSend.addEventListener('click', () => {
+      const email = document.getElementById('email-input').value.trim();
+      if (!email) {
+        alert('수신할 이메일 주소를 입력해 주세요.');
+        document.getElementById('email-input').focus();
+        return;
+      }
+
+      // 카드 이미지 캔버스에 그리기
+      generateCardImage((dataUrl) => {
+        cardPreviewImg.src = dataUrl;
+        previewModal.classList.add('active');
+      });
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      previewModal.classList.remove('active');
+    });
+
+    btnFinalSend.addEventListener('click', () => {
+      const email = document.getElementById('email-input').value;
+      alert(`${email} (으)로 카드가 성공적으로 발송되었습니다!`);
+      previewModal.classList.remove('active');
+    });
+
+    // Pure Canvas로 카드 요소 렌더링
+    function generateCardImage(callback) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // 해상도에 맞춘 캔버스 크기 (600x380)
+      canvas.width = 600;
+      canvas.height = 380;
+
+      const theme = document.querySelector('input[name="card-theme"]:checked').value;
+      const font = document.querySelector('input[name="font-type"]:checked').value;
+      const toText = document.getElementById('to-input').value || '받는 사람';
+      const fromText = document.getElementById('from-input').value || '보내는 사람';
+      const msgText = msgTextarea.value || '소중한 메시지를 전달하세요.';
+
+      // 카드 테마별 배경 색상 지정
+      let bgColor = '#23141c';
+      let glowColor = '#ff6b8b';
+      if (theme === 'thanks') {
+        bgColor = '#121e18';
+        glowColor = '#48bb78';
+      } else if (theme === 'sorry') {
+        bgColor = '#161423';
+        glowColor = '#8b5cf6';
+      }
+
+      // 배경 베이스
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 그래디언트 원형 효과
+      const gradient = ctx.createRadialGradient(500, 50, 10, 500, 50, 300);
+      gradient.addColorStop(0, glowColor);
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 테두리
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+      // 텍스트 그리기 - To.
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `600 22px 'Noto Serif KR', serif`;
+      ctx.fillText(`To. ${toText}`, 40, 60);
+
+      // 본문 텍스트 (줄바꿈 처리)
+      ctx.font = `20px '${font}', sans-serif`;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      
+      const maxWidth = 520;
+      const lineHeight = 32;
+      let x = 40;
+      let y = 120;
+
+      // 간단 자동 줄바꿈 알고리즘
+      let words = msgText.split('');
+      let line = '';
+
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n];
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+
+        if (words[n] === '\n' || (testWidth > maxWidth && n > 0)) {
+          ctx.fillText(line, x, y);
+          line = words[n] === '\n' ? '' : words[n];
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+
+      // From.
+      ctx.font = `600 22px 'Noto Serif KR', serif`;
+      ctx.textAlign = 'right';
+      ctx.fillText(`From. ${fromText}`, canvas.width - 40, canvas.height - 50);
+
+      // 이미지 변환 콜백 함수 호출
+      callback(canvas.toDataURL('image/png'));
+    }
+  </script>
+
+</body>
+</html>
