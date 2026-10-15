@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .select {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+        }
+        .select input[type="radio"] {
+            display: none;
+        }
+        .select label {
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .select input[type="radio"]:checked + label {
+            font-size: large;
+            font-weight: bold;
+            background-color: rgb(57, 65, 60);
+            color: white;
+        }
+        #content {
+            display: flex;
+            flex-direction: column;
+            background-color: rgb(57, 65, 60);
+        }
+        #content img {
+            align-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: red;
+            margin: 20px 80px;
+        }
+        #content button {
+            align-content: center;
+            text-align: center;
+            width: 300px;
+            border: none;
+        }
+        #content button:hover {
+            font-size: large;
+            font-weight: bold;
+        }
+        .menu1 {
+            display: flex;
+            background-color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        .menu1 button {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>제목</h1>
+    <div class="select" id="radio-group">
+        <input type="radio" name="category" id="drink" checked><label for="drink">음료</label>
+        <input type="radio" name="category" id="food"><label for="food">푸드</label>
+        <input type="radio" name="category" id="product"><label for="product">상품</label>
+    </div>
+    <div id="content">
+    </div>
+    <script>
+        const menu_arr = [
+            {category: 'drink',
+                name: 'drink1',
+                img: 'img/img1.PNG'
+            },
+            {category: 'drink',
+                name: 'drink2',
+                img: 'img/img1.PNG'
+            },
+            {category: 'food',
+                name: 'food1',
+                img: 'img/img1.PNG'
+            },
+            {category: 'food',
+                name: 'food2',
+                img: 'img/img1.PNG'
+            },
+            {category: 'product',
+                name: 'product1',
+                img: 'img/img1.PNG'
+            },
+            {category: 'product',
+                name: 'product2',
+                img: 'img/img1.PNG'
+            }
+        ]
+
+        const content = document.querySelector('#content');
+        const select = document.getElementById('radio-group');
+        select.addEventListener('click', function(e){
+            memuFiltering(menu_arr, e.target.id);
+        });
+        /*        
+        const drink = document.getElementById('drink');
+        drink.addEventListener('click', function(){
+            memuFiltering(menu_arr, 'drink');
+        });
+        const food = document.getElementById('food');
+        food.addEventListener('click', function(){
+            memuFiltering(menu_arr, 'food');
+        });
+        const product = document.getElementById('product');
+        product.addEventListener('click', function(){
+            memuFiltering(menu_arr, 'product');
+        });
+        */
+        function memuFiltering(arr, category) {
+            content.innerHTML = '';
+            for(let i=0; i<arr.length; i++) {
+                const memu1 = document.createElement('div');
+                memu1.classList.add('menu1');
+                const img = document.createElement('img');
+                img.src = `${arr[i].img}`;
+                const name = document.createElement('button');
+                name.type = 'button';
+                name.classList.add('menu-name');
+                name.textContent = arr[i].name;
+                memu1.append(img, name);
+                content.appendChild(memu1);
+                if(arr[i].category !== category) {
+                     memu1.classList.toggle('hidden');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
